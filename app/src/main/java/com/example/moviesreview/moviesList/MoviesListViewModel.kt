@@ -1,9 +1,8 @@
 package com.example.moviesreview.moviesList
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.moviesreview.data.MoviesList
+import com.example.moviesreview.data.MovieItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,19 +14,24 @@ import javax.inject.Inject
 class MoviesListViewModel @Inject constructor(repository: MoviesListRepository)
     : ViewModel() {
 
-    private val _moviesList : MutableStateFlow<MoviesList?> = MutableStateFlow(null)
-    val moviesList : StateFlow<MoviesList?> = _moviesList
+    private val _moviesList : MutableStateFlow<Response> = MutableStateFlow(Response.Success(arrayListOf()))
+    val moviesList : StateFlow<Response> = _moviesList
 
     init {
         viewModelScope.launch {
             try{
                 repository.getMoviesList()
                     .collect {
-                        _moviesList.value = it
+                        _moviesList.value = Response.Success(it.movies)
                     }
             } catch (exception: Exception) {
-                Log.d("MoviesListViewModel", exception.message.toString())
+                _moviesList.value = Response.Error(exception)
             }
         }
     }
+}
+
+sealed class Response {
+    data class Success(val movies: ArrayList<MovieItem>): Response()
+    data class Error(val exception: Exception): Response()
 }
