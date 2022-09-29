@@ -1,7 +1,11 @@
 package com.example.moviesreview.moviesList
 
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.example.moviesreview.BuildConfig
 import com.example.moviesreview.base.IoDispatcher
+import com.example.moviesreview.data.MovieItem
 import com.example.moviesreview.data.MoviesList
 import com.example.moviesreview.network.MoviesApiService
 import kotlinx.coroutines.CoroutineDispatcher
@@ -13,8 +17,10 @@ import javax.inject.Inject
 
 class MoviesListRepository @Inject constructor(private val moviesApiService: MoviesApiService) {
 
-    suspend fun getMoviesList(): Flow<MoviesList> = flow {
-        emit(moviesApiService.getMoviesList(BuildConfig.API_KEY))
-    }.flowOn(Dispatchers.IO)
+    fun getMoviesList(): Flow<PagingData<MovieItem>> {
+        return Pager(PagingConfig(pageSize = 20, enablePlaceholders = false)) {
+            MoviesPagingSource(moviesApiService)
+        }.flow
+    }
 
 }

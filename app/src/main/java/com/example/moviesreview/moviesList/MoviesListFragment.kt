@@ -15,6 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.example.moviesreview.databinding.FragmentMoviesListBinding
 import com.example.moviesreview.utils.launchAndRepeatOnLifecycle
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -45,16 +46,9 @@ class MoviesListFragment : Fragment() {
             setHasFixedSize(true)
         }
 
-        launchAndRepeatOnLifecycle {
-            moviesListViewModel.moviesList.collect {
-                when(it) {
-                    is Response.Success -> {
-                        movieListAdapter.submitList(it.movies)
-                    }
-                    is Response.Error -> {
-                        Log.d("MoviesListFragment", it.exception.toString())
-                    }
-                }
+        lifecycleScope.launch {
+            moviesListViewModel.fetchPosts().collectLatest {
+                movieListAdapter.submitData(it)
             }
         }
     }

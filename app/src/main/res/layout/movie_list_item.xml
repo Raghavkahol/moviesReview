@@ -17,7 +17,7 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/moview_poster"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="500dp"
             android:layout_marginBottom="@dimen/margin_medium"
             android:imageSrc="@{movieItem.posterPath}"
             app:layout_constraintStart_toStartOf="parent"

@@ -2,6 +2,7 @@ package com.example.moviesreview.moviesList
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -9,7 +10,7 @@ import com.example.moviesreview.data.MovieItem
 import com.example.moviesreview.databinding.MovieListItemBinding
 import com.example.moviesreview.utils.executeAfter
 
-internal class MoviesListAdapter() : ListAdapter<MovieItem,
+internal class MoviesListAdapter() : PagingDataAdapter<MovieItem,
         MoviesListViewHolder>(MoviesDiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MoviesListViewHolder {
@@ -22,14 +23,6 @@ internal class MoviesListAdapter() : ListAdapter<MovieItem,
         holder.binding.executeAfter {
             this.movieItem = movieItem
         }
-    }
-
-    override fun getItemCount(): Int {
-        return super.getItemCount()
-    }
-
-    override fun submitList(list: MutableList<MovieItem>?) {
-        super.submitList(list)
     }
 }
 
